@@ -2,24 +2,34 @@ from random import random
 from PIL import Image
 from PIL import ImageDraw
 
-size_x = 1000
-size_y = 1000
+size_x = 2000
+size_y = 6000
 
 
 def generateField(num):
     field = []
     for star in range(num):
-        field.append((random() * size_x, random() * size_y, random()))
+        field.append((random(), random(), random(), random()))
     return field
 
 
-img = Image.new('RGB', (size_x, size_y))
+img = Image.new('RGBA', (size_x, size_y), (0, 0, 0, 0))
 draw = ImageDraw.Draw(img)
 
-for star in generateField(200):
-    point_1 = (star[0], star[1] - 2)
-    point_2 = (star[0] - 2, star[1] + 2)
-    point_3 = (star[0] + 2, star[1] + 2)
-    draw.polygon([point_1, point_2, point_3], fill=(255, 255, 255))
+for star in generateField(1000):
+    x, y = star[0] * size_x, star[1] * size_y
+    brightness = int(star[2] * 100 + star[1] * 150)
+    star_size = star[3] + 1
 
-img.show()
+    if random() >= .5:
+        point_1 = (x, y - star_size)
+        point_2 = (x - star_size, y + star_size)
+        point_3 = (x + star_size, y + star_size)
+    else:
+        point_1 = (x, y + star_size)
+        point_2 = (x - star_size, y - star_size)
+        point_3 = (x + star_size, y - star_size)
+
+    draw.polygon([point_1, point_2, point_3], fill=(255, 255, 255, brightness))
+
+img.save('test.png')
